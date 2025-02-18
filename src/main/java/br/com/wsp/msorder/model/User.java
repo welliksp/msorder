@@ -1,8 +1,13 @@
 package br.com.wsp.msorder.model;
 
+import br.com.wsp.msorder.dto.UserDto;
 import br.com.wsp.msorder.model.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,15 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    public User(UserDto userDto) {
+
+        this.firstName = userDto.firstName();
+        this.lastName = userDto.lastName();
+        this.email = userDto.email();
+        this.birthdate = userDto.birthdate();
+        this.password = userDto.password();
+    }
 
     public Long getId() {
         return id;
