@@ -5,10 +5,7 @@ import br.com.wsp.msorder.service.IUserService;
 import br.com.wsp.msorder.service.impl.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -24,8 +21,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid UserDto userDto) {
 
-        UserDto userSaved = service.save(userDto);
+        service.save(userDto);
 
-        return ResponseEntity.ok(userSaved);
+        return ResponseEntity.ok().build();
     }
+
 }
