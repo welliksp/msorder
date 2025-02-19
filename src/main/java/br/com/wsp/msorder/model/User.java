@@ -1,7 +1,6 @@
 package br.com.wsp.msorder.model;
 
 import br.com.wsp.msorder.dto.UserDto;
-import br.com.wsp.msorder.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,14 +10,20 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @NotNull(message = "Username is required")
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @NotBlank(message = "FirstName is required")
     @Size(max = 30, message = "FirstName must be up to 30 characters")
@@ -37,7 +42,7 @@ public class User {
 
     @NotNull(message = "Birthdate is required")
     @Column(name = "birthdate", nullable = false)
-    private LocalDate birthdate; // Alterado para LocalDate
+    private LocalDate birthdate;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
@@ -45,9 +50,14 @@ public class User {
     private String password;
 
     @NotNull(message = "Role is required")
-    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role; // ADMIN ou USER
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
@@ -61,8 +71,12 @@ public class User {
         this.password = userDto.password();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getFirstName() {
@@ -85,7 +99,7 @@ public class User {
         return password;
     }
 
-    public UserRole getRole() {
+    public Set<Role> getRole() {
         return role;
     }
 
@@ -93,8 +107,12 @@ public class User {
         return orders;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setFirstName(String firstName) {
@@ -117,7 +135,7 @@ public class User {
         this.password = password;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(Set<Role> role) {
         this.role = role;
     }
 

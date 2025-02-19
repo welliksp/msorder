@@ -1,7 +1,7 @@
 package br.com.wsp.msorder.service.impl;
 
 import br.com.wsp.msorder.dto.UserDto;
-import br.com.wsp.msorder.exception.MsOrderBadRequestException;
+import br.com.wsp.msorder.exception.MSOrderBadRequestException;
 import br.com.wsp.msorder.model.User;
 import br.com.wsp.msorder.repository.UserRepository;
 import br.com.wsp.msorder.service.IUserService;
@@ -33,10 +33,12 @@ public class UserService implements IUserService {
             userSaved = repository.save(user);
 
         } catch (Exception exception) {
-            logger.error(String.valueOf(new MsOrderBadRequestException()));
-            throw new MsOrderBadRequestException();
+
+            logger.error(String.valueOf(new MSOrderBadRequestException()));
+            throw new MSOrderBadRequestException();
         }
 
-        return new UserDto(userSaved.getId(), userSaved.getFirstName(), userSaved.getLastName(), userSaved.getEmail(), userSaved.getBirthdate(), null);
+//        return new UserDto(userSaved.getId(), userSaved.getFirstName(), userSaved.getLastName(), userSaved.getEmail(), userSaved.getBirthdate(), null);
+        return null;
     }
 }

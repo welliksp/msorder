@@ -1,12 +1,15 @@
 package br.com.wsp.msorder.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 public record UserDto(Long id,
-                      String firstName,
-                      String lastName,
-                      String email,
-                      LocalDate birthdate,
-                      String password) {
-
+                      @NotNull @NotBlank String firstName,
+                      @NotNull @NotBlank String lastName,
+                      @NotNull @NotBlank @Email String email,
+                      @NotNull LocalDate birthdate,
+                      @NotNull @NotBlank String password) {
 }
