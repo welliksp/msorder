@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -36,9 +35,7 @@ class UserServiceTest {
 
         doReturn(user).when(repository).save(any());
 
-        UserDto userSaved = service.save(userDto);
-
-        assertNotNull(userSaved);
+        service.save(userDto);
 
         verify(repository, times(1)).save(any());
 

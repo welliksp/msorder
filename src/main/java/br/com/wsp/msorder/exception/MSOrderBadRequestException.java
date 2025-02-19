@@ -6,4 +6,7 @@ public class MSOrderBadRequestException extends RuntimeException {
         super();
     }
 
+    public MSOrderBadRequestException(String message) {
+        super(message);
+    }
 }

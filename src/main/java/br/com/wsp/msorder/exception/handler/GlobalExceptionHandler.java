@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
         ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(), List.of(ex.getMessage()));
 
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MSOrderBadRequestException.class)

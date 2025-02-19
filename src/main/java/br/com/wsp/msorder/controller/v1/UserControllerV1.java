@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user")
-public class UserController {
+public class UserControllerV1 {
 
     private final IUserService service;
 
-    public UserController(UserService service) {
+    public UserControllerV1(UserService service) {
         this.service = service;
     }
 

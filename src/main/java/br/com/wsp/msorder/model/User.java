@@ -1,12 +1,16 @@
 package br.com.wsp.msorder.model;
 
+import br.com.wsp.msorder.dto.LoginRequest;
 import br.com.wsp.msorder.dto.UserDto;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +19,13 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User {
+@Transactional
+public class User implements Serializable {
+
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull(message = "Username is required")
     @Column(name = "username", nullable = false, unique = true)
@@ -62,6 +68,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
+    public User() {
+    }
+
     public User(UserDto userDto) {
 
         this.firstName = userDto.firstName();
@@ -71,7 +80,7 @@ public class User {
         this.password = userDto.password();
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -107,9 +116,10 @@ public class User {
         return orders;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -141,5 +151,10 @@ public class User {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public boolean passwordEncoder(LoginRequest request, PasswordEncoder passwordEncoder) {
+        
+       return passwordEncoder.matches(request.password(), this.password);
     }
 }
