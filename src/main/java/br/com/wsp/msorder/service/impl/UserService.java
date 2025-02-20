@@ -2,6 +2,7 @@ package br.com.wsp.msorder.service.impl;
 
 import br.com.wsp.msorder.dto.UserDto;
 import br.com.wsp.msorder.exception.BadRequestException;
+import br.com.wsp.msorder.exception.RoleNotFoundException;
 import br.com.wsp.msorder.model.Role;
 import br.com.wsp.msorder.model.User;
 import br.com.wsp.msorder.repository.RoleRepository;
@@ -33,10 +34,9 @@ public class UserService implements IUserService {
     @Override
     public void save(UserDto userDto) {
 
-        var byEmail = userRepository.findByEmail(userDto.email());
-        var role = roleRepository.findByName(Role.Values.USER.name());
+        var role = roleRepository.findByName(Role.Values.USER.name()).orElseThrow(() -> new RoleNotFoundException(""));
 
-        byEmail.ifPresentOrElse(
+        userRepository.findByEmail(userDto.email()).ifPresentOrElse(
 
                 u -> {
                     throw new BadRequestException("User exists: " + u.getId());
@@ -51,12 +51,10 @@ public class UserService implements IUserService {
                     user.setBirthdate(userDto.birthdate());
                     user.setUsername(userDto.firstName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 8));
                     user.setPassword(passwordEncoder.encode(userDto.password()));
-                    user.setRole(Set.of(role.get()));
+                    user.setRole(Set.of(role));
 
                     userRepository.save(user);
                 }
-
         );
-
     }
 }

@@ -1,9 +1,14 @@
 package br.com.wsp.msorder.controller.v1;
 
 import br.com.wsp.msorder.dto.ProductDto;
+import br.com.wsp.msorder.model.Product;
 import br.com.wsp.msorder.service.IProductService;
 import br.com.wsp.msorder.service.impl.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +28,33 @@ public class ProductControllerV1 {
 
         service.save(productDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
-//
-//    @GetMapping
-//    public ResponseEntity<?> findOne(@RequestParam String productName){
-//
-//
-//
-//
-//
-//    }
+
+    @GetMapping
+    public ResponseEntity<?> findProductByName(@RequestParam @NotNull @NotEmpty String productName) {
+
+        var productByName = service.findProductByName(productName);
+
+        return ResponseEntity.ok(productByName);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<Page<Product>> getAllProducts(@Valid Pageable pageable) {
+
+        return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam Long productId) {
+
+        service.delete(productId);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
     //TODO - usuario role admin permissao CRUD, usuario user permissao para criar pedidos e visualizar produtos
     //TODO - usuario com a role user criar um pedido
