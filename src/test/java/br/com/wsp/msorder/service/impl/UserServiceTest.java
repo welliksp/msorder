@@ -1,7 +1,7 @@
 package br.com.wsp.msorder.service.impl;
 
 import br.com.wsp.msorder.dto.UserDto;
-import br.com.wsp.msorder.exception.MSOrderBadRequestException;
+import br.com.wsp.msorder.exception.BadRequestException;
 import br.com.wsp.msorder.model.User;
 import br.com.wsp.msorder.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +45,10 @@ class UserServiceTest {
     @DisplayName("TEST CREATE USER SHOULD RETURN EXCEPTION")
     void createUser__ShouldThrowException() {
 
-        doThrow(MSOrderBadRequestException.class).when(repository).save(any());
+        doThrow(BadRequestException.class).when(repository).save(any());
 
 
-        assertThrows(MSOrderBadRequestException.class, () -> service.save(userDto));
+        assertThrows(BadRequestException.class, () -> service.save(userDto));
 
     }
 

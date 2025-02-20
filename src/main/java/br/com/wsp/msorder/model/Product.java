@@ -1,5 +1,6 @@
 package br.com.wsp.msorder.model;
 
+import br.com.wsp.msorder.dto.ProductDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -34,11 +35,21 @@ public class Product {
     private BigDecimal price;
 
     @NotNull(message = "Stock is required")
-    @Column(name = "stock", nullable = false)
+    @Column(name = "stock", nullable = true)
     private Integer stock;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public Product() {
+    }
+
+    public Product(ProductDto productDto) {
+
+        this.name = productDto.name();
+        this.description = productDto.description();
+        this.price = productDto.price();
+    }
 
 
     public Long getId() {

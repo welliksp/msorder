@@ -1,7 +1,7 @@
 package br.com.wsp.msorder.service.impl;
 
 import br.com.wsp.msorder.dto.UserDto;
-import br.com.wsp.msorder.exception.MSOrderBadRequestException;
+import br.com.wsp.msorder.exception.BadRequestException;
 import br.com.wsp.msorder.model.Role;
 import br.com.wsp.msorder.model.User;
 import br.com.wsp.msorder.repository.RoleRepository;
@@ -39,7 +39,7 @@ public class UserService implements IUserService {
         byEmail.ifPresentOrElse(
 
                 u -> {
-                    throw new MSOrderBadRequestException("User exists: " + u.getId());
+                    throw new BadRequestException("User exists: " + u.getId());
                 },
 
                 () -> {
