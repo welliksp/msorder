@@ -1,6 +1,6 @@
 package br.com.wsp.msorder.controller.v1;
 
-import br.com.wsp.msorder.dto.ProductDto;
+import br.com.wsp.msorder.dto.ProductRequest;
 import br.com.wsp.msorder.model.Product;
 import br.com.wsp.msorder.service.IProductService;
 import br.com.wsp.msorder.service.impl.ProductService;
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,23 +25,23 @@ public class ProductControllerV1 {
 
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid ProductDto productDto) {
+    public ResponseEntity<?> save(@RequestBody @Valid ProductRequest productRequest) {
 
-        service.save(productDto);
+        service.save(productRequest);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<?> findProductByName(@RequestParam @NotNull @NotEmpty String productName) {
+    public ResponseEntity<?> findProductByCode(@RequestParam @NotNull Long productCode) {
 
-        var productByName = service.findProductByName(productName);
+        var productByName = service.findProductByCode(productCode);
 
         return ResponseEntity.ok(productByName);
     }
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Page<Product>> getAllProducts(@Valid Pageable pageable) {
 
         return ResponseEntity.ok(service.findAll(pageable));
@@ -48,6 +49,7 @@ public class ProductControllerV1 {
 
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<?> delete(@RequestParam Long productId) {
 
         service.delete(productId);
@@ -56,7 +58,6 @@ public class ProductControllerV1 {
     }
 
 
-    //TODO - usuario role admin permissao CRUD, usuario user permissao para criar pedidos e visualizar produtos
     //TODO - usuario com a role user criar um pedido
     //TODO - criar rota para pagamento
     //TODO - atualizar o estoque do produto apenas após pagamento

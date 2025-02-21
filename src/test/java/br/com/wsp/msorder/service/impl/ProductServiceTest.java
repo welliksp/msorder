@@ -1,6 +1,6 @@
 package br.com.wsp.msorder.service.impl;
 
-import br.com.wsp.msorder.dto.ProductDto;
+import br.com.wsp.msorder.dto.ProductRequest;
 import br.com.wsp.msorder.exception.BadRequestException;
 import br.com.wsp.msorder.exception.ProductNotFoundException;
 import br.com.wsp.msorder.model.Product;
@@ -28,7 +28,7 @@ class ProductServiceTest {
     ProductService service;
 
     @Mock
-    ProductDto productDto;
+    ProductRequest productRequest;
 
     @Mock
     Product product;
@@ -40,26 +40,26 @@ class ProductServiceTest {
     @DisplayName("Test Create Product Should Return Product Created")
     void test__createProduct_shouldReturnProductCreated() {
 
-        doReturn("").when(productDto).name();
-        doReturn(Optional.empty()).when(repository).findByName(anyString());
+        doReturn("").when(productRequest).name();
+        doReturn(Optional.empty()).when(repository).findByCode(anyLong());
         doReturn(product).when(repository).save(any());
 
-        service.save(productDto);
+        service.save(productRequest);
 
         verify(repository, times(1)).save(any());
-        verify(repository, times(1)).findByName(any());
+        verify(repository, times(1)).findByCode(any());
     }
 
     @Test
     @DisplayName("Test Create Product Should Return Exception")
     void test__createProduct_shouldReturnException() {
 
-        doReturn("").when(productDto).name();
-        doReturn(Optional.of(product)).when(repository).findByName(anyString());
+        doReturn("").when(productRequest).name();
+        doReturn(Optional.of(product)).when(repository).findByCode(anyLong());
 
-        assertThrows(BadRequestException.class, () -> service.save(productDto));
+        assertThrows(BadRequestException.class, () -> service.save(productRequest));
 
-        verify(repository, times(1)).findByName(any());
+        verify(repository, times(1)).findByCode(any());
 
     }
 
@@ -69,25 +69,25 @@ class ProductServiceTest {
     void test__findProductByName_shouldReturnProduct() {
 
 
-        doReturn(Optional.of(product)).when(repository).findByName(anyString());
+        doReturn(Optional.of(product)).when(repository).findByCode(anyLong());
 
-        var product = service.findProductByName("");
+        var product = service.findProductByCode(1L);
 
         assertNotNull(product);
 
-        verify(repository, times(1)).findByName(anyString());
+        verify(repository, times(1)).findByCode(anyLong());
 
     }
 
     @Test
     @DisplayName("Test Find Product By Name Should Return Exception")
-    void test__findProductByName_shouldReturnException() {
+    void test__findProductByCode_shouldReturnException() {
 
-        doThrow(ProductNotFoundException.class).when(repository).findByName(anyString());
+        doThrow(ProductNotFoundException.class).when(repository).findByCode(anyLong());
 
-        assertThrows(ProductNotFoundException.class, () -> service.findProductByName(""));
+        assertThrows(ProductNotFoundException.class, () -> service.findProductByCode(1L));
 
-        verify(repository, times(1)).findByName(any());
+        verify(repository, times(1)).findByCode(any());
 
     }
 

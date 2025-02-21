@@ -1,6 +1,7 @@
 package br.com.wsp.msorder.service.impl;
 
-import br.com.wsp.msorder.dto.UserDto;
+import br.com.wsp.msorder.dto.UserRequest;
+import br.com.wsp.msorder.dto.UserResponse;
 import br.com.wsp.msorder.exception.BadRequestException;
 import br.com.wsp.msorder.exception.RoleNotFoundException;
 import br.com.wsp.msorder.model.Role;
@@ -32,29 +33,36 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void save(UserDto userDto) {
+    public UserResponse save(UserRequest userRequest) {
 
         var role = roleRepository.findByName(Role.Values.USER.name()).orElseThrow(() -> new RoleNotFoundException(""));
+        var user = userRepository.findByEmail(userRequest.email());
 
-        userRepository.findByEmail(userDto.email()).ifPresentOrElse(
+        validateUser(user.isPresent());
 
-                u -> {
-                    throw new BadRequestException("User exists: " + u.getId());
-                },
+        var newUser = new User();
+        newUser.setFirstName(userRequest.firstName());
+        newUser.setLastName(userRequest.lastName());
+        newUser.setEmail(userRequest.email());
+        newUser.setBirthdate(userRequest.birthdate());
+        newUser.setUsername(userRequest.firstName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 8));
 
-                () -> {
+        logger.info("ENCRYPT PASSWORD");
+        newUser.setPassword(passwordEncoder.encode(userRequest.password()));
+        newUser.setRole(Set.of(role));
 
-                    var user = new User();
-                    user.setFirstName(userDto.firstName());
-                    user.setLastName(userDto.lastName());
-                    user.setEmail(userDto.email());
-                    user.setBirthdate(userDto.birthdate());
-                    user.setUsername(userDto.firstName().toLowerCase() + "_" + UUID.randomUUID().toString().substring(0, 8));
-                    user.setPassword(passwordEncoder.encode(userDto.password()));
-                    user.setRole(Set.of(role));
+        logger.info("CREATE NEW USER: " + user);
+        var save = userRepository.save(newUser);
+        logger.info("USER CREATED: " + save.getId());
 
-                    userRepository.save(user);
-                }
-        );
+        return new UserResponse(save.getId(), save.getFirstName(), save.getLastName(), save.getUsername(), save.getEmail(), save.getBirthdate());
+    }
+
+    private void validateUser(Boolean isPresent) {
+
+        if (Boolean.TRUE.equals(isPresent)) {
+            logger.error("FOUND USER", new BadRequestException("REGISTERED USER FOUND"));
+            throw new BadRequestException("REGISTERED USER FOUND");
+        }
     }
 }

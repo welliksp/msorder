@@ -1,7 +1,7 @@
 package br.com.wsp.msorder.model;
 
 import br.com.wsp.msorder.dto.LoginRequest;
-import br.com.wsp.msorder.dto.UserDto;
+import br.com.wsp.msorder.dto.UserRequest;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -68,17 +67,6 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    public User() {
-    }
-
-    public User(UserDto userDto) {
-
-        this.firstName = userDto.firstName();
-        this.lastName = userDto.lastName();
-        this.email = userDto.email();
-        this.birthdate = userDto.birthdate();
-        this.password = userDto.password();
-    }
 
     public Long getId() {
         return id;

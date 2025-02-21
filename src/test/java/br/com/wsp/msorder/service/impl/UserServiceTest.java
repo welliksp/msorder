@@ -1,6 +1,6 @@
 package br.com.wsp.msorder.service.impl;
 
-import br.com.wsp.msorder.dto.UserDto;
+import br.com.wsp.msorder.dto.UserRequest;
 import br.com.wsp.msorder.exception.BadRequestException;
 import br.com.wsp.msorder.model.Role;
 import br.com.wsp.msorder.model.User;
@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -42,12 +43,12 @@ class UserServiceTest {
     @Mock
     BCryptPasswordEncoder passwordEncoder;
 
-    UserDto userDto;
+    UserRequest userRequest;
 
     @BeforeEach
     void setUp() {
 
-        userDto = new UserDto(1L, "Teste", "Teste", "teste@gmail.com", LocalDate.of(1995, 11, 15), "Teste@123");
+        userRequest = new UserRequest(1L, "Teste", "Teste", "teste@gmail.com", LocalDate.of(1995, 11, 15), "Teste@123");
 
 
     }
@@ -62,7 +63,9 @@ class UserServiceTest {
 
         doReturn(user).when(repository).save(any());
 
-        service.save(userDto);
+        var save = service.save(userRequest);
+
+        assertNotNull(save);
 
         verify(repository, times(1)).save(any());
 
@@ -76,7 +79,7 @@ class UserServiceTest {
         doReturn(Optional.of(user)).when(repository).findByEmail(anyString());
         doReturn(Optional.of(role)).when(roleRepository).findByName(anyString());
 
-        assertThrows(BadRequestException.class, () -> service.save(userDto));
+        assertThrows(BadRequestException.class, () -> service.save(userRequest));
 
     }
 
@@ -90,7 +93,7 @@ class UserServiceTest {
 
         doThrow(BadRequestException.class).when(repository).save(any());
 
-        assertThrows(BadRequestException.class, () -> service.save(userDto));
+        assertThrows(BadRequestException.class, () -> service.save(userRequest));
 
     }
 

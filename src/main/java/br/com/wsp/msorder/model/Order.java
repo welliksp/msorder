@@ -11,8 +11,8 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Ou use GenerationType.UUID se suportado
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @NotNull(message = "User is required")
     @ManyToOne
@@ -32,7 +32,7 @@ public class Order {
     @Column(name = "total_amount", nullable = false)
     private List<OrderItem> items;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -52,7 +52,7 @@ public class Order {
         return items;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

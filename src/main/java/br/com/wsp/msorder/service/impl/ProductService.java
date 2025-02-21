@@ -1,7 +1,6 @@
 package br.com.wsp.msorder.service.impl;
 
-import br.com.wsp.msorder.dto.ProductDto;
-import br.com.wsp.msorder.exception.BadRequestException;
+import br.com.wsp.msorder.dto.ProductRequest;
 import br.com.wsp.msorder.exception.ProductNotFoundException;
 import br.com.wsp.msorder.model.Product;
 import br.com.wsp.msorder.repository.ProductRepository;
@@ -26,27 +25,29 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void save(ProductDto productDto) {
+    public void save(ProductRequest productRequest) {
 
-        repository.findByName(productDto.name()).ifPresentOrElse(
+        repository.findByCode(productRequest.code()).ifPresentOrElse(
 
                 p -> {
 
-                    throw new BadRequestException("Product exists!");
+                    p.setCurrentStock(p.getCurrentStock() + productRequest.quantity());
+
+                    repository.save(p);
                 },
                 () -> {
 
-                    logger.info("Create new product: ", productDto);
-                    var productSaved = repository.save(new Product(productDto));
-                    logger.info("Product created: %id", productSaved.getId());
+                    logger.info("Create new product: {}", productRequest);
+                    var productSaved = repository.save(new Product(productRequest));
+                    logger.info("Product created: {}", productSaved.getId());
                 }
         );
     }
 
     @Override
-    public Optional<Product> findProductByName(String productName) {
+    public Optional<Product> findProductByCode(Long productCode) {
 
-        return Optional.ofNullable(repository.findByName(productName).orElseThrow(() -> new ProductNotFoundException(productName)));
+        return Optional.ofNullable(repository.findByCode(productCode).orElseThrow(() -> new ProductNotFoundException(productCode)));
     }
 
 
@@ -63,4 +64,5 @@ public class ProductService implements IProductService {
 
         repository.delete(product);
     }
+
 }

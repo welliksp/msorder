@@ -1,9 +1,10 @@
 package br.com.wsp.msorder.service;
 
-import br.com.wsp.msorder.dto.UserDto;
+import br.com.wsp.msorder.dto.UserRequest;
+import br.com.wsp.msorder.dto.UserResponse;
 
 public interface IUserService {
 
 
-    void save(UserDto userDto);
+    UserResponse save(UserRequest userRequest);
 }

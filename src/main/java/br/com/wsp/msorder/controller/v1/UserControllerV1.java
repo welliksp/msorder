@@ -1,11 +1,18 @@
 package br.com.wsp.msorder.controller.v1;
 
-import br.com.wsp.msorder.dto.UserDto;
+import br.com.wsp.msorder.dto.UserRequest;
+import br.com.wsp.msorder.dto.UserResponse;
 import br.com.wsp.msorder.service.IUserService;
 import br.com.wsp.msorder.service.impl.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -19,11 +26,17 @@ public class UserControllerV1 {
 
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserResponse> save(@RequestBody @Valid UserRequest userRequest) {
 
-        service.save(userDto);
+        var save = service.save(userRequest);
 
-        return ResponseEntity.ok().build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(save.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(save);
     }
 
     //TODO - usuario role admin permissao CRUD, usuario user permissao para criar pedidos e visualizar produtos
