@@ -3,14 +3,12 @@ package br.com.wsp.msorder.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
-
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Ordering is required")
@@ -21,7 +19,7 @@ public class OrderItem {
     @NotNull(message = "Product is required")
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private List<Product> product;
+    private Product product;
 
     @NotNull(message = "Quantity is required")
     @Column(nullable = false)
@@ -35,7 +33,7 @@ public class OrderItem {
         return order;
     }
 
-    public List<Product> getProduct() {
+    public Product getProduct() {
         return product;
     }
 
@@ -51,7 +49,7 @@ public class OrderItem {
         this.order = order;
     }
 
-    public void setProduct(List<Product> product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 

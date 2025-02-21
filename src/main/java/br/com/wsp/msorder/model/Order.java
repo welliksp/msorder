@@ -1,17 +1,18 @@
 package br.com.wsp.msorder.model;
 
+import br.com.wsp.msorder.model.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "User is required")
@@ -19,18 +20,17 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull(message = "Status is required")
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @NotNull(message = "Total amount is required")
     @Column(name = "total_amount", nullable = false)
-    private Long totalAmount;
+    private BigDecimal totalAmount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @NotNull(message = "Items is required")
     @Column(name = "total_amount", nullable = false)
-    private List<OrderItem> items;
+    private List<OrderItem> orderItems;
 
     public Long getId() {
         return id;
@@ -40,16 +40,16 @@ public class Order {
         return user;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public Long getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
     public void setId(Long id) {
@@ -60,15 +60,15 @@ public class Order {
         this.user = user;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

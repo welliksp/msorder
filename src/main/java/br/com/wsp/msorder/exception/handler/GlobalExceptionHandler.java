@@ -1,9 +1,6 @@
 package br.com.wsp.msorder.exception.handler;
 
-import br.com.wsp.msorder.exception.ApiError;
-import br.com.wsp.msorder.exception.BadRequestException;
-import br.com.wsp.msorder.exception.InternalServerErrorException;
-import br.com.wsp.msorder.exception.ProductNotFoundException;
+import br.com.wsp.msorder.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +46,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError> userNotFoundException(Exception ex) {
 
+        ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), List.of(ex.getMessage()));
 
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiError> handleInsufficientStock(InsufficientStockException ex) {
+
+        ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), List.of(ex.getMessage()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ApiError> handleOrderNotFound(OrderNotFoundException ex) {
+        ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), List.of(ex.getMessage()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
 }
